@@ -24,7 +24,7 @@ import jakarta.ws.rs.core.Response.Status;
 @Path("/users")
 @Resource
 public class UserResouce {
-    
+
     @POST
     @PermitAll
     @Transactional
@@ -41,7 +41,7 @@ public class UserResouce {
     @Produces(MediaType.APPLICATION_JSON)
     public PageResponse<UserResponse, User> getUsers(@BeanParam PageRequest pageRequest) {
         PanacheQuery<User> page = User.findAll(pageRequest.getSort())
-            .page(pageRequest.getPage(), pageRequest.getSize());
+                .page(pageRequest.getPage(), pageRequest.getSize());
 
         return new PageResponse<>(page, UserResponse::new);
     }

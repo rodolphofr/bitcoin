@@ -31,18 +31,19 @@ import lombok.RequiredArgsConstructor;
 @Resource
 @RequiredArgsConstructor
 public class OrderResource {
-    
+
     private final OrderRepository orderRepository;
     private final OrderResponseAssembler orderResponseAssembler;
-    
+
     @POST
     @Transactional
     @RolesAllowed("USER")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response create(@Context SecurityContext securityContext, @Valid OrderRequest orderRequest) { 
+    public Response create(@Context SecurityContext securityContext, @Valid OrderRequest orderRequest) {
         /**
-         * TODO: SecurityFilter should be created to abstract the query for the user credentials 
+         * TODO: SecurityFilter should be created to abstract the query for the user
+         * credentials
          */
         final User user = User.findById(orderRequest.userId());
 
@@ -58,17 +59,17 @@ public class OrderResource {
         orderRepository.persist(order);
 
         return Response.status(Status.CREATED)
-            .entity(orderResponseAssembler.assemble(order)).build();
+                .entity(orderResponseAssembler.assemble(order)).build();
     }
 
     @GET
     @RolesAllowed("ADMIN")
     @Produces(MediaType.APPLICATION_JSON)
     public PageResponse<OrderResponse, Order> getOrders(
-        @DefaultValue("0") @QueryParam("page") int pageIndex,
-        @DefaultValue("100") @QueryParam("size") int pageSize) {
+            @QueryParam("page") @DefaultValue("0") int pageIndex,
+            @QueryParam("size") @DefaultValue("100") int pageSize) {
 
         return new PageResponse<>(
-            Order.findAll().page(pageIndex, pageSize), orderResponseAssembler);
+                Order.findAll().page(pageIndex, pageSize), orderResponseAssembler);
     }
 }
